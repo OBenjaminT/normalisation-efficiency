@@ -1,0 +1,229 @@
+# index.js
+User,
+Prep,
+Set,
+Lesson,
+Event,
+House,
+Module,
+Role,
+Notification,
+File,
+Demo,
+OidcClient,
+OidcScope,
+Papercut,
+TutorGroup,
+Year,
+Yeargroup,
+Department,
+Subject,
+Room,
+Building,
+Period,
+Category,
+Subcategory,
+Group,
+Post,
+GroupFollower
+
+# Yeargroup.js
+name: String,
+yearID: String,
+nationalCurriculumYear: String,
+code: String,
+headOfYear: {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
+assistantHeadOfYear: {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
+
+# Year.js
+startYear: String,
+endYear: String,
+startDate: Date,
+endDate: Date,
+current: Boolean,
+terms: [{
+termID: Number,
+name: String,
+startDate: Date,
+endDate: Date
+}]
+
+# Users.js
+firstname: String,
+surname: String,
+middlename: String,
+preferredname: String,
+username: { type: String, uppercase: true },
+house: { type: mongoose.Schema.ObjectId, ref: 'House' },
+status: {
+type: String,
+enum: ['student', 'teaching_staff', 'non-teaching_staff']
+},
+year: Number,
+yearGroup: { type: mongoose.Schema.ObjectId, ref: 'Yeargroup' },
+email: String,
+schoolID: String,
+isamsID: String,
+isamsCode: String,
+title: String,
+config: {
+colours: [{ set: mongoose.Schema.ObjectId, colour: String }],
+favouriteModules: [mongoose.Schema.ObjectId],
+privacy: {
+tutorCanSeeLesson: { type: Boolean, default: true },
+tutorCanCountPreps: { type: Boolean, default: true }
+},
+archiveType: {
+type: String,
+lowercase: true,
+default: 'date',
+enum: ['date', 'completion']
+}
+},
+roles: [{ type: mongoose.Schema.ObjectId, ref: 'Role' }],
+lastActive: {
+type: Date,
+default: new Date('1970-01-01Z00:00:00:000')
+},
+pupilType: String,
+academicStudy: String,
+positions: [String],
+expoID: [String],
+archived: {
+type: Boolean,
+default: false
+
+# TutorGroups.js
+name: String,
+year: String,
+academicYear: { type: mongoose.SchemaTypes.ObjectId, ref: 'Year' },
+tutors: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'User' }],
+students: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'User' }],
+house: { type: mongoose.SchemaTypes.ObjectId, ref: 'House' },
+archived: { type: Boolean, default: false }
+
+# Subject.js
+subjectID: String,
+name: String,
+code: String,
+reportName: String,
+department: {type: mongoose.SchemaTypes.ObjectId, ref: 'Department'}
+
+# Sets.js
+setID: String,
+name: String,
+subject: {type: mongoose.SchemaTypes.ObjectId, ref: 'Subject'},
+year: {type: mongoose.SchemaTypes.ObjectId, ref: 'Year'},
+yearGroup: {type: mongoose.SchemaTypes.ObjectId, ref: 'Yeargroup'},
+teacher: {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
+students: [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+archived: {
+type: Boolean,
+default: false
+
+# Room.js
+roomID: String,
+name: String,
+initials: String,
+code: String,
+building: {type: mongoose.SchemaTypes.ObjectId, ref: 'Building'}
+
+# Role.js
+name: String,
+auth: String, // mfa
+type: {
+type: String,
+enum: ['user', 'admin']
+}
+
+# Preps.js
+title: String,
+description: String,
+createdAt: Date,
+dueAt: {
+type: Date,
+default: new Date()
+},
+dueLesson: { type: mongoose.SchemaTypes.ObjectId, ref: 'Lesson' },
+dueFor: [
+{
+user: { type: mongoose.SchemaTypes.ObjectId, ref: 'User' },
+completed: {
+type: Boolean,
+default: false
+},
+updatedAt: {
+type: Date,
+default: new Date()
+}
+}
+],
+assignedBy: { type: mongoose.SchemaTypes.ObjectId, ref: 'User' },
+set: { type: mongoose.SchemaTypes.ObjectId, ref: 'Set' },
+personal: Boolean,
+lastEditedAt: Date,
+assignedDate: Date,
+files: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'File' }],
+archived: {
+type: Boolean,
+default: false
+
+# Period.js
+day: String,
+startTime: String,
+endTime: String,
+longName: String,
+shortName: String,
+periodID: String,
+week: String
+}, { collection: 'timetable.periods'});
+
+# Notification.js
+title: String,
+message: String,
+recipients: [{
+user: mongoose.ObjectId,
+read: Boolean,
+readAt: Date
+}],
+sentAt: Date,
+sender: mongoose.ObjectId,
+meta: {
+page: String,
+param: String
+}
+
+# Module.js
+name: String,
+icon: String,
+link: String,
+external: Boolean,
+colour: String,
+showFor: [String],
+createdBy: {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
+preview: {
+title: String,
+subtitle: String,
+link: String
+},
+staff: Boolean,
+new: { type: Boolean, default: false }
+
+# Lessons.js
+subject: {type: mongoose.SchemaTypes.ObjectId, ref: 'Subject'},
+room: {type: mongoose.SchemaTypes.ObjectId, ref: 'Room'},
+set: {type: mongoose.SchemaTypes.ObjectId, ref: 'Set'},
+teacher: {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
+students: [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+start: Date,
+end: Date,
+period: {type: mongoose.SchemaTypes.ObjectId, ref: 'Period'},
+archived: {
+type: Boolean,
+default: false
+}
+}, { collection: 'timetable.lessons', setDefaultsOnInsert: true});
+
+# House.js
+
+

@@ -1,0 +1,21 @@
+userFirstname String
+userSurname String
+userMiddlename String
+userPreferredname String
+userUsername String // uppercase true
+userHouse String // ref House
+userStatus String // enum ['student' 'teaching_staff' 'non-teaching_staff']
+userYear Number
+userYearGroup String // ref Yeargroup
+userEmail String
+userSchoolID String
+userIsamsID String
+userIsamsCode String
+userTitle String
+userRoles String // ref Role
+userLastActive Date // default new Date('1970-01-01Z00:00:00:000')
+userPupilType String
+userAcademicStudy String
+userPositions String
+userExpoID String
+userArchived Boolean // default false

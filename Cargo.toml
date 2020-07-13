@@ -1,9 +1,11 @@
 [package]
-name = "normalisation-efficiency"
+name = "eerusqlite"
 version = "0.1.0"
-authors = ["OBenjaminT <oliver.wildwolf@outlook.com>"]
+authors = ["TURNERO"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[dependencies.rusqlite]
+version = "0.21.0"
+features = ["bundled"]

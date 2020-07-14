@@ -7,13 +7,16 @@ use back_end::table::get_tables;
 
 fn main() -> Result<()> {
     let conn = db_meta::connect_db("test.db");
-    for table_sql in schema::no_sql_startingpoint::get_no_sql_startingpoing().iter() {
-        t::create_table(&conn, db_meta::import_table(table_sql.to_string()));
+    for sql in schema::get_ddl("src/sql/noSQL/drop.txt".to_string()) {
+        conn.execute(&sql[..], params![])?;
     }
-    let me = get_tables::get_person();
+    for sql in schema::get_ddl("src/sql/noSQL/create.txt".to_string()) {
+        conn.execute(&sql[..], params![])?;
+    }
+    let me = get_tables::get_user();
 
     conn.execute(
-        "INSERT INTO users (Firstname, Surname, YearGroup, Middlename, Preferredname, Username, Status, Year, Email, SchoolID, IsamsID, IsamsCode, Title, LastActive, PupilType, AcademicStudy, Positions, ExpoID, Archived, House, Roles) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21)",
+        "INSERT INTO users VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21)",
         params![
             me.Firstname,
             me.Surname,

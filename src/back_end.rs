@@ -27,17 +27,6 @@ pub mod table {
         vec
     }
 
-    #[cfg(test)]
-    mod test_table {
-        // use super::*;
-
-        #[test]
-        fn test_create_table() {
-            assert_eq!(2 + 2, 4)
-        }
-    }
-
-    pub mod get_fields {}
     pub mod get_tables {
         #[derive(Debug)]
         pub struct User {

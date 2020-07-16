@@ -1,21 +1,30 @@
 use rusqlite::{params, Result};
 mod back_end;
 use back_end::table as t;
-use back_end::table::db_meta;
-use back_end::table::schema;
 use back_end::table::get_tables;
+use rusqlite::Connection;
 
-fn main() -> Result<()> {
-    let conn = db_meta::connect_db("test.db");
-    for sql in schema::get_ddl("src/sql/noSQL/drop.txt".to_string()) {
+fn main() {
+    actal_main();
+}
+
+fn actal_main () -> Result<()> {
+    let conn = Connection::open("test.db").unwrap();
+    for sql in t::get_ddl("src/sql/noSQL/drop.txt".to_string()) {
         conn.execute(&sql[..], params![])?;
     }
-    for sql in schema::get_ddl("src/sql/noSQL/create.txt".to_string()) {
+    for sql in t::get_ddl("src/sql/noSQL/create.txt".to_string()) {
         conn.execute(&sql[..], params![])?;
     }
-    let me = get_tables::get_user();
+    /* let me = get_tables::get_user(); */
 
+    let rollee = t::fill_vec_str(3);
     conn.execute(
+        "INSERT INTO role VALUES (?1, ?2, ?3);",
+        params![rollee[0], rollee[1], rollee[2]],
+    )?;
+
+    /*     conn.execute(
         "INSERT INTO users VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21)",
         params![
             me.Firstname,
@@ -40,11 +49,16 @@ fn main() -> Result<()> {
             me.House,
             me.Roles
         ],
-    )?;
+    )?; */
 
-    let mut stmt = conn.prepare("SELECT * FROM users")?;
-    let user_iter = stmt.query_map(params![], |row| {
-        Ok(get_tables::User {
+    let mut stmt = conn.prepare("SELECT * FROM role")?;
+    let role_iter = stmt.query_map(params![], |row| {
+        Ok(get_tables::Role {
+            name: row.get(0)?,
+            auth: row.get(1)?,
+            typeS: row.get(2)?,
+        })
+        /* Ok(get_tables::User {
             Firstname: row.get(0)?,
             Surname: row.get(1)?,
             YearGroup: row.get(2)?,
@@ -60,17 +74,17 @@ fn main() -> Result<()> {
             Title: row.get(12)?,
             LastActive: row.get(13)?,
             PupilType: row.get(14)?,
-            AcademicStudy:row.get(15)?, 
+            AcademicStudy: row.get(15)?,
             Positions: row.get(16)?,
             ExpoID: row.get(17)?,
             Archived: row.get(18)?,
             House: row.get(19)?,
             Roles: row.get(20)?,
-        })
+        }) */
     })?;
 
-    for user in user_iter {
-        println!("Found person {:?}", user.unwrap());
+    for role in role_iter {
+        println!("Found person {:?}", role.unwrap());
     }
     Ok(())
 }

@@ -130,4 +130,11 @@ pub mod db_meta {
             assert_eq!(result, import_table(sql))
         }
     }
+    
+    #[derive(Debug, PartialEq, PartialOrd)]
+    pub struct Table {
+        pub name: String,
+        pub columns: Vec<(String, String)>, // name -> type
+        pub foreign_keys: Vec<(String, String, String)>, // local field, foreign table, foreign field
+    }
 }

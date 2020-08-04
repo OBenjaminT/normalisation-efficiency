@@ -1,6 +1,7 @@
 pub mod table {
     #![allow(dead_code, non_snake_case)]
     use rand::distributions::{Distribution, Uniform};
+    use rusqlite::{params};
 
     const CHARS: [&'static str; 52] = [
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
@@ -25,6 +26,16 @@ pub mod table {
             vec.push(fill_str());
         }
         vec
+    }
+
+    pub fn insert_role (con: &rusqlite::Connection, size: usize) {
+        for _ in 0..size {
+            let rollee = fill_vec_str(3);
+            con.execute(
+                "INSERT INTO role VALUES (?1, ?2, ?3);",
+                params![rollee[0], rollee[1], rollee[2]],
+            ).unwrap();
+        }
     }
 
     pub mod get_tables {
@@ -52,31 +63,6 @@ pub mod table {
             pub House: String,
             pub Roles: String,
         }
-        pub fn get_user() -> User {
-            User {
-                Firstname: "oliver".to_string(),
-                Surname: "turner".to_string(),
-                YearGroup: "U6".to_string(),
-                Middlename: "benjamin".to_string(),
-                Preferredname: "benji".to_string(),
-                Username: "turnero".to_string(),
-                Status: "awol".to_string(),
-                Year: 2020,
-                Email: "turnero".to_string(),
-                SchoolID: "soafj".to_string(),
-                IsamsID: "sdanoif".to_string(),
-                IsamsCode: "asoeiwrqu".to_string(),
-                Title: "sir".to_string(),
-                LastActive: "yesterday".to_string(),
-                PupilType: "student".to_string(),
-                AcademicStudy: "CS".to_string(),
-                Positions: "prefect".to_string(),
-                ExpoID: "8usdadfa987f9as".to_string(),
-                Archived: 0,
-                House: "benson".to_string(),
-                Roles: "admin".to_string(),
-            }
-        }
         #[derive(Debug)]
         pub struct Role {
             pub name: String,
@@ -87,13 +73,6 @@ pub mod table {
 
     use std::fs::File;
     use std::io::{BufRead, BufReader};
-
-    #[derive(Debug, PartialEq, PartialOrd)]
-    pub struct Table {
-        pub name: String,
-        pub columns: Vec<(String, String)>, // name -> type
-        pub foreign_keys: Vec<(String, String, String)>, // local field, foreign table, foreign field
-    }
     pub fn get_ddl(path: String) -> impl Iterator<Item = String> {
         BufReader::new(File::open(path).unwrap())
             .lines()
